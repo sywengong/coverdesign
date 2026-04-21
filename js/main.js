@@ -920,6 +920,13 @@ class App {
         const zoomInBtn = document.getElementById('zoomInBtn');
         const zoomOutBtn = document.getElementById('zoomOutBtn');
         const zoomFitBtn = document.getElementById('zoomFitBtn');
+        const templateBtn = document.getElementById('templateBtn');
+
+        if (templateBtn) {
+            templateBtn.addEventListener('click', () => {
+                this.openTemplateSelector();
+            });
+        }
 
         if (exportBtn) {
             exportBtn.addEventListener('click', () => this.exportImage());
@@ -1813,6 +1820,26 @@ class App {
         this.updateLayerList();
         this.saveProject();
         Utils.showToast('画布已清空', 'success');
+    }
+
+    // 打开模板选择器
+    openTemplateSelector() {
+        // 查找模板区域
+        const templateSection = document.querySelector('.template-section');
+        if (templateSection) {
+            // 滚动到模板区域
+            templateSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // 添加高亮动画
+            templateSection.style.animation = 'templatePulse 1s ease';
+            setTimeout(() => {
+                templateSection.style.animation = '';
+            }, 1000);
+
+            Utils.showToast('请选择下方模板', 'info');
+        } else {
+            Utils.showToast('模板加载中，请稍候...', 'info');
+        }
     }
 
     // 保存历史记录

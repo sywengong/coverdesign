@@ -601,6 +601,18 @@ body {
     }
 }
 
+@keyframes templatePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
 .dialog-content {
     animation: slideUp 0.3s ease-out;
 }
@@ -637,4 +649,167 @@ body {
     height: 1px;
     background: #16213e;
     margin: 6px 0;
+}
+
+/* 模板选择器样式 */
+.template-section {
+    border-bottom: 2px solid #0f3460;
+}
+
+.template-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #667eea;
+}
+
+.template-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+    max-height: 80px;
+    overflow-y: auto;
+}
+
+.template-category-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: #0f3460;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #aaa;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.template-category-btn:hover {
+    background: #1a4a7a;
+    color: #eee;
+}
+
+.template-category-btn.active {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+}
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.template-card {
+    background: #0f3460;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.template-card:hover {
+    transform: translateY(-2px);
+    border-color: #667eea;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.template-preview {
+    position: relative;
+    width: 100%;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+}
+
+.template-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.template-card:hover .template-overlay {
+    opacity: 1;
+}
+
+.template-use-btn {
+    padding: 8px 16px;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.template-use-btn:hover {
+    background: #764ba2;
+    transform: scale(1.05);
+}
+
+.template-info {
+    padding: 8px;
+}
+
+.template-name {
+    display: block;
+    font-size: 12px;
+    color: #eee;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.template-size {
+    display: block;
+    font-size: 10px;
+    color: #999;
+    margin-top: 2px;
+}
+
+.template-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+    font-size: 14px;
+}
+
+/* 模板加载动画 */
+@keyframes templatePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+.template-card.loading {
+    animation: templatePulse 1.5s infinite;
+    border-color: #667eea;
 }

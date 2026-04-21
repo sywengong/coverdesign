@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(findstr /n \"templateBtn openTemplateSelector exportImage\" E:/ai/tools/coverdesign/js/main.js)"
+    ]
+  }
+}
