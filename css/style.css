@@ -79,6 +79,17 @@ body {
     background: #ff6b6b;
 }
 
+.btn-warning {
+    background: #f59e0b;
+    color: white;
+    border: 1px solid #f59e0b;
+}
+
+.btn-warning:hover {
+    background: #fbbf24;
+    border-color: #fbbf24;
+}
+
 .btn-small {
     padding: 4px 8px;
     font-size: 12px;
@@ -244,6 +255,11 @@ body {
 /* 背景设置 */
 .background-settings .setting-row {
     margin-bottom: 12px;
+}
+
+/* 重置按钮与预设下拉框的安全间距 */
+#resetFilters {
+    margin-top: 8px;
 }
 
 .background-settings label {

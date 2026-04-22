@@ -76,6 +76,22 @@
                             <span class="platform-name">横幅</span>
                             <span class="size-info">1920×1080</span>
                         </button>
+                        <button class="size-btn" data-platform="custom" id="customSizeBtn">
+                            <span class="platform-icon"><i class="fas fa-cog"></i></span>
+                            <span class="platform-name">自定义</span>
+                            <span class="size-info" id="customSizeInfo">--×--</span>
+                        </button>
+                    </div>
+                    <div class="custom-size-inputs" id="customSizeInputs" style="display: none; margin-top: 10px; padding: 10px; background: #0f3460; border-radius: 6px;">
+                        <div class="setting-row" style="margin-bottom: 8px;">
+                            <label style="font-size: 12px; color: #aaa;">宽度 (px)</label>
+                            <input type="number" id="customWidth" value="1080" min="100" max="4096" style="width: 100%; padding: 6px; background: #16213e; border: 1px solid #1a4a7a; border-radius: 4px; color: #eee;">
+                        </div>
+                        <div class="setting-row" style="margin-bottom: 8px;">
+                            <label style="font-size: 12px; color: #aaa;">高度 (px)</label>
+                            <input type="number" id="customHeight" value="1920" min="100" max="4096" style="width: 100%; padding: 6px; background: #16213e; border: 1px solid #1a4a7a; border-radius: 4px; color: #eee;">
+                        </div>
+                        <button class="btn btn-small btn-primary" id="applyCustomSize" style="width: 100%;">应用尺寸</button>
                     </div>
                     <div class="zoom-controls" style="margin-top: 15px;">
                         <button class="btn btn-small btn-secondary" id="zoomOutBtn" title="缩小"><i class="fas fa-minus"></i></button>
@@ -307,7 +323,7 @@
                         </select>
                     </div>
                     <div class="setting-row">
-                        <button id="resetFilters" class="btn btn-small btn-secondary" style="width: 100%;">重置滤镜</button>
+                        <button id="resetFilters" class="btn btn-small btn-warning" style="width: 100%;"><i class="fas fa-rotate-left"></i> 重置滤镜</button>
                     </div>
                     <hr style="border-color: #0f3460; margin: 15px 0;">
                     <div class="setting-row">

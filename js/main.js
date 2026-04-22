@@ -1379,8 +1379,8 @@ class App {
             presetSelect.addEventListener('change', () => {
                 if (this.selectedElement && this.selectedElement.type === 'image') {
                     this.selectedElement.applyPreset(presetSelect.value);
-                    this.updateFilterSettings(this.selectedElement);
                     this.canvasEditor.render();
+                    this.updateFilterSettings(this.selectedElement);
                     this.saveProject();
                 }
             });
@@ -1392,8 +1392,8 @@ class App {
             resetBtn.addEventListener('click', () => {
                 if (this.selectedElement && this.selectedElement.type === 'image') {
                     this.selectedElement.resetFilters();
-                    this.updateFilterSettings(this.selectedElement);
                     this.canvasEditor.render();
+                    this.updateFilterSettings(this.selectedElement);
                     this.saveProject();
                     Utils.showToast('滤镜已重置', 'success');
                 }
@@ -2146,6 +2146,24 @@ class PlatformSelector {
         const buttons = document.querySelectorAll('.size-btn');
         buttons.forEach(btn => {
             btn.addEventListener('click', () => {
+                const platform = btn.dataset.platform;
+
+                if (platform === 'custom') {
+                    // 显示自定义尺寸输入框
+                    const customInputs = document.getElementById('customSizeInputs');
+                    if (customInputs) {
+                        const isVisible = customInputs.style.display === 'block';
+                        customInputs.style.display = isVisible ? 'none' : 'block';
+                    }
+                    return;
+                }
+
+                // 隐藏自定义尺寸输入框
+                const customInputs = document.getElementById('customSizeInputs');
+                if (customInputs) {
+                    customInputs.style.display = 'none';
+                }
+
                 buttons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
 
@@ -2158,6 +2176,43 @@ class PlatformSelector {
                 }
             });
         });
+
+        // 自定义尺寸应用按钮
+        const applyCustomSizeBtn = document.getElementById('applyCustomSize');
+        if (applyCustomSizeBtn) {
+            applyCustomSizeBtn.addEventListener('click', () => {
+                const widthInput = document.getElementById('customWidth');
+                const heightInput = document.getElementById('customHeight');
+
+                const width = parseInt(widthInput?.value) || 1080;
+                const height = parseInt(heightInput?.value) || 1920;
+
+                // 限制范围
+                const clampedWidth = Math.max(100, Math.min(4096, width));
+                const clampedHeight = Math.max(100, Math.min(4096, height));
+
+                // 更新按钮文字
+                const customSizeInfo = document.getElementById('customSizeInfo');
+                if (customSizeInfo) {
+                    customSizeInfo.textContent = `${clampedWidth}×${clampedHeight}`;
+                }
+
+                // 设置画布尺寸
+                if (window.app && window.app.canvasEditor) {
+                    window.app.canvasEditor.setSize(clampedWidth, clampedHeight);
+                    window.app.saveProject();
+                }
+
+                // 更新 active 状态
+                document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                const customBtn = document.getElementById('customSizeBtn');
+                if (customBtn) {
+                    customBtn.classList.add('active');
+                }
+
+                Utils.showToast(`画布尺寸已设置为 ${clampedWidth}×${clampedHeight}`, 'success');
+            });
+        }
     }
 }
 
