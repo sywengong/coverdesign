@@ -418,13 +418,22 @@ class ImageElement extends CanvasElement {
 
     render(ctx) {
         if (!this.visible || !this.imageData) return;
-        
+
         ctx.save();
         ctx.globalAlpha = this.opacity / 100;
+
+        // 应用滤镜
+        if (this.filters && Object.keys(this.filters).length > 0) {
+            const filterString = FilterManager.toCSSString(this.filters);
+            if (filterString) {
+                ctx.filter = filterString;
+            }
+        }
+
         ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
         ctx.rotate(this.rotation * Math.PI / 180);
         ctx.translate(-this.width / 2, -this.height / 2);
-        
+
         ctx.drawImage(this.imageData, 0, 0, this.width, this.height);
         ctx.restore();
     }
