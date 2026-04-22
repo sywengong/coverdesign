@@ -285,6 +285,68 @@
                         <input type="number" id="shapeBorderRadius" value="0" min="0" max="500">
                     </div>
                 </div>
+
+                <div class="panel-section" id="filterSettings" style="display: none;">
+                    <h3>滤镜特效</h3>
+                    <div class="setting-row">
+                        <label>预设</label>
+                        <select id="filterPreset" class="setting-input">
+                            <option value="normal">正常</option>
+                            <option value="grayscale">黑白</option>
+                            <option value="sepia">复古</option>
+                            <option value="vintage">怀旧</option>
+                            <option value="cold">冷色调</option>
+                            <option value="warm">暖色调</option>
+                            <option value="highContrast">高对比</option>
+                            <option value="lowContrast">低对比</option>
+                            <option value="bright">明亮</option>
+                            <option value="dark">昏暗</option>
+                            <option value="blur">模糊</option>
+                            <option value="sharpen">锐化</option>
+                            <option value="invert">反色</option>
+                        </select>
+                    </div>
+                    <div class="setting-row">
+                        <button id="resetFilters" class="btn btn-small btn-secondary" style="width: 100%;">重置滤镜</button>
+                    </div>
+                    <hr style="border-color: #0f3460; margin: 15px 0;">
+                    <div class="setting-row">
+                        <label>亮度 <span id="brightnessValue">100%</span></label>
+                        <input type="range" id="filterBrightness" min="0" max="200" value="100">
+                    </div>
+                    <div class="setting-row">
+                        <label>对比度 <span id="contrastValue">100%</span></label>
+                        <input type="range" id="filterContrast" min="0" max="200" value="100">
+                    </div>
+                    <div class="setting-row">
+                        <label>饱和度 <span id="saturateValue">100%</span></label>
+                        <input type="range" id="filterSaturate" min="0" max="200" value="100">
+                    </div>
+                    <div class="setting-row">
+                        <label>灰度 <span id="grayscaleValue">0%</span></label>
+                        <input type="range" id="filterGrayscale" min="0" max="100" value="0">
+                    </div>
+                    <div class="setting-row">
+                        <label>复古 <span id="sepiaValue">0%</span></label>
+                        <input type="range" id="filterSepia" min="0" max="100" value="0">
+                    </div>
+                    <div class="setting-row">
+                        <label>色相旋转 <span id="hueRotateValue">0°</span></label>
+                        <input type="range" id="filterHueRotate" min="0" max="360" value="0">
+                    </div>
+                    <div class="setting-row">
+                        <label>反色 <span id="invertValue">0%</span></label>
+                        <input type="range" id="filterInvert" min="0" max="100" value="0">
+                    </div>
+                    <div class="setting-row">
+                        <label>模糊 <span id="blurValue">0px</span></label>
+                        <input type="range" id="filterBlur" min="0" max="20" value="0">
+                    </div>
+                    <div class="setting-row">
+                        <label>不透明度 <span id="filterOpacityValue">100%</span></label>
+                        <input type="range" id="filterOpacity" min="0" max="100" value="100">
+                    </div>
+                </div>
             </aside>
         </div>
     </div>
@@ -292,6 +354,7 @@
     <div class="toast" id="toast"></div>
 
     <script src="js/utils.js"></script>
+    <script src="js/filters.js"></script>
     <script src="js/layer.js"></script>
     <script src="js/elements.js"></script>
     <script src="js/canvas.js"></script>

@@ -254,7 +254,10 @@ class ImageElement extends CanvasElement {
         this.src = options.src || '';
         this.imageData = null;
         this.name = '图片';
-        
+
+        // 滤镜设置
+        this.filters = options.filters || {};
+
         if (options.imageData) {
             // 如果有保存的图片数据，直接加载
             if (typeof options.imageData === 'string') {
@@ -262,6 +265,29 @@ class ImageElement extends CanvasElement {
             } else if (options.imageData instanceof Image) {
                 this.imageData = options.imageData;
             }
+        }
+    }
+
+    // 设置滤镜
+    setFilter(filterName, value) {
+        this.filters[filterName] = value;
+    }
+
+    // 获取滤镜值
+    getFilter(filterName) {
+        return this.filters[filterName] !== undefined ? this.filters[filterName] : FilterManager.FILTERS[filterName]?.default;
+    }
+
+    // 重置所有滤镜
+    resetFilters() {
+        this.filters = {};
+    }
+
+    // 应用滤镜预设
+    applyPreset(presetName) {
+        const preset = FilterManager.PRESETS[presetName];
+        if (preset) {
+            this.filters = { ...preset.filters };
         }
     }
 
@@ -354,9 +380,10 @@ class ImageElement extends CanvasElement {
     toJSON() {
         const data = {
             ...super.toJSON(),
-            src: this.src
+            src: this.src,
+            filters: this.filters
         };
-        
+
         // 如果图片已加载，保存图片数据以便撤销/重做时恢复
         if (this.imageData && this.imageData.src) {
             // 检查是否是base64数据或blob URL
@@ -376,7 +403,7 @@ class ImageElement extends CanvasElement {
                 }
             }
         }
-        
+
         return data;
     }
 
@@ -385,6 +412,7 @@ class ImageElement extends CanvasElement {
         data.id = Utils.generateId();
         const clone = new ImageElement(data);
         clone.imageData = this.imageData;
+        clone.filters = { ...this.filters };
         return clone;
     }
 

@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(findstr /n \"templateBtn openTemplateSelector exportImage\" E:/ai/tools/coverdesign/js/main.js)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git config *)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(git add *)"
     ]
   }
 }

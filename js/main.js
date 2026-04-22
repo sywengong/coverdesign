@@ -1367,6 +1367,76 @@ class App {
                 }
             });
         }
+
+        // 滤镜事件绑定
+        this.bindFilterEvents();
+    }
+
+    bindFilterEvents() {
+        // 预设选择
+        const presetSelect = document.getElementById('filterPreset');
+        if (presetSelect) {
+            presetSelect.addEventListener('change', () => {
+                if (this.selectedElement && this.selectedElement.type === 'image') {
+                    this.selectedElement.applyPreset(presetSelect.value);
+                    this.updateFilterSettings(this.selectedElement);
+                    this.canvasEditor.render();
+                    this.saveProject();
+                }
+            });
+        }
+
+        // 重置按钮
+        const resetBtn = document.getElementById('resetFilters');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                if (this.selectedElement && this.selectedElement.type === 'image') {
+                    this.selectedElement.resetFilters();
+                    this.updateFilterSettings(this.selectedElement);
+                    this.canvasEditor.render();
+                    this.saveProject();
+                    Utils.showToast('滤镜已重置', 'success');
+                }
+            });
+        }
+
+        // 各个滤镜滑块
+        const filterMap = [
+            { id: 'filterBrightness', name: 'brightness', displayId: 'brightnessValue' },
+            { id: 'filterContrast', name: 'contrast', displayId: 'contrastValue' },
+            { id: 'filterSaturate', name: 'saturate', displayId: 'saturateValue' },
+            { id: 'filterGrayscale', name: 'grayscale', displayId: 'grayscaleValue' },
+            { id: 'filterSepia', name: 'sepia', displayId: 'sepiaValue' },
+            { id: 'filterHueRotate', name: 'hueRotate', displayId: 'hueRotateValue' },
+            { id: 'filterInvert', name: 'invert', displayId: 'invertValue' },
+            { id: 'filterBlur', name: 'blur', displayId: 'blurValue' },
+            { id: 'filterOpacity', name: 'opacity', displayId: 'filterOpacityValue' }
+        ];
+
+        filterMap.forEach(({ id, name, displayId }) => {
+            const slider = document.getElementById(id);
+            const display = document.getElementById(displayId);
+
+            if (slider) {
+                slider.addEventListener('input', () => {
+                    if (this.selectedElement && this.selectedElement.type === 'image') {
+                        const value = parseInt(slider.value);
+                        this.selectedElement.setFilter(name, value);
+
+                        if (display) {
+                            const unit = FilterManager.FILTERS[name]?.unit || '';
+                            display.textContent = `${value}${unit}`;
+                        }
+
+                        this.canvasEditor.render();
+                    }
+                });
+
+                slider.addEventListener('change', () => {
+                    this.saveProject();
+                });
+            }
+        });
     }
 
     bindBackgroundEvents() {
