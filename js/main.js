@@ -123,6 +123,9 @@ class App {
             }, { passive: false });
         }
 
+        // 拖拽上传图片支持
+        this.setupDragAndDrop(canvas);
+
         // Pointer events support (pen/stylus and unified pointer model)
         // 只在支持 Pointer Events 的浏览器上使用
         if (supportsPointerEvents) {
@@ -484,6 +487,99 @@ class App {
 
         this.canvasEditor.render();
         this.updatePropertyPanel();
+    }
+
+    setupDragAndDrop(canvas) {
+        // 阻止默认拖拽行为
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            canvas.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+            document.body.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        // 拖拽进入画布 - 显示视觉反馈
+        canvas.addEventListener('dragenter', (e) => {
+            canvas.style.boxShadow = '0 0 0 4px #667eea inset';
+            canvas.style.cursor = 'copy';
+        });
+
+        // 拖拽离开画布 - 移除视觉反馈
+        canvas.addEventListener('dragleave', (e) => {
+            // 检查是否真的离开了画布（而不是进入了子元素）
+            if (!canvas.contains(e.relatedTarget)) {
+                canvas.style.boxShadow = '';
+                canvas.style.cursor = '';
+            }
+        });
+
+        // 拖拽在画布上方 - 允许放置
+        canvas.addEventListener('dragover', (e) => {
+            e.dataTransfer.dropEffect = 'copy';
+        });
+
+        // 放置文件 - 处理图片
+        canvas.addEventListener('drop', async (e) => {
+            canvas.style.boxShadow = '';
+            canvas.style.cursor = '';
+
+            const files = Array.from(e.dataTransfer.files);
+            if (files.length === 0) return;
+
+            // 过滤出图片文件
+            const imageFiles = files.filter(file => file.type.startsWith('image/'));
+            if (imageFiles.length === 0) {
+                Utils.showToast('请拖入图片文件', 'error');
+                return;
+            }
+
+            // 获取放置位置（相对于画布）
+            const { x: dropX, y: dropY } = this.getCanvasPoint(e);
+
+            // 依次处理每张图片
+            let successCount = 0;
+            const spacing = 20; // 图片间距
+
+            for (let i = 0; i < imageFiles.length; i++) {
+                const file = imageFiles[i];
+                try {
+                    const reader = new FileReader();
+                    const imageData = await new Promise((resolve, reject) => {
+                        reader.onload = (event) => resolve(event.target.result);
+                        reader.onerror = reject;
+                        reader.readAsDataURL(file);
+                    });
+
+                    // 创建图片元素，错位排列
+                    const element = await this.canvasEditor.addImage(imageData);
+                    if (element) {
+                        // 设置位置（基于放置点，错位排列）
+                        element.x = dropX + (i * spacing);
+                        element.y = dropY + (i * spacing);
+                        // 确保图片在画布内
+                        element.x = Math.max(0, Math.min(element.x, this.canvasEditor.options.width - element.width));
+                        element.y = Math.max(0, Math.min(element.y, this.canvasEditor.options.height - element.height));
+
+                        this.canvasEditor.render();
+                        successCount++;
+                    }
+                } catch (error) {
+                    console.error('加载图片失败:', error);
+                }
+            }
+
+            if (successCount > 0) {
+                this.updateLayerList();
+                this.saveProject();
+                Utils.showToast(`成功导入 ${successCount} 张图片`, 'success');
+            } else {
+                Utils.showToast('图片导入失败', 'error');
+            }
+        });
     }
 
     getCanvasTransform() {
