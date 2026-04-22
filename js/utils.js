@@ -447,7 +447,7 @@ class StyleParser {
 }
 
 class LocalStorageManager {
-    static MAX_SIZE = 5 * 1024 * 1024; // 5MB 限制
+    static MAX_SIZE = 50 * 1024 * 1024; // 50MB 限制
 
     static save(key, data) {
         try {
