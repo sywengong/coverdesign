@@ -1806,15 +1806,24 @@ class App {
 
         const textSettings = document.getElementById('textSettings');
         const shapeSettings = document.getElementById('shapeSettings');
+        const filterSettings = document.getElementById('filterSettings');
         const elementSettings = document.getElementById('elementSettings');
 
         // 多选时隐藏特定类型设置
         if (isMultiSelect) {
             if (textSettings) textSettings.style.display = 'none';
             if (shapeSettings) shapeSettings.style.display = 'none';
+            if (filterSettings) filterSettings.style.display = 'none';
         } else {
             if (textSettings) textSettings.style.display = element.type === 'text' ? 'block' : 'none';
             if (shapeSettings) shapeSettings.style.display = element.type === 'shape' ? 'block' : 'none';
+            if (filterSettings) {
+                const isImage = element.type === 'image';
+                filterSettings.style.display = isImage ? 'block' : 'none';
+                if (isImage) {
+                    this.updateFilterSettings(element);
+                }
+            }
 
             if (element.type === 'text') {
                 const fontSizeInput = document.getElementById('fontSize');
@@ -1846,6 +1855,62 @@ class App {
         this.isUpdatingPropertyPanel = false;
     }
 
+    updateFilterSettings(element) {
+        if (!element || element.type !== 'image') return;
+
+        const filters = element.getFilter ? element.getFilter() : {};
+
+        // 更新预设下拉框
+        const presetSelect = document.getElementById('filterPreset');
+        if (presetSelect) {
+            // 检测当前滤镜值匹配哪个预设
+            let matchedPreset = 'normal';
+            for (const [key, preset] of Object.entries(FilterManager.PRESETS)) {
+                if (key === 'normal') continue;
+                const presetFilters = preset.filters;
+                let matches = true;
+                for (const [fKey, fValue] of Object.entries(presetFilters)) {
+                    if ((filters[fKey] || FilterManager.FILTERS[fKey]?.default) !== fValue) {
+                        matches = false;
+                        break;
+                    }
+                }
+                if (matches) {
+                    matchedPreset = key;
+                    break;
+                }
+            }
+            presetSelect.value = matchedPreset;
+        }
+
+        // 更新各个滤镜滑块
+        const filterMapping = {
+            'filterBrightness': 'brightness',
+            'filterContrast': 'contrast',
+            'filterSaturate': 'saturate',
+            'filterGrayscale': 'grayscale',
+            'filterSepia': 'sepia',
+            'filterHueRotate': 'hueRotate',
+            'filterInvert': 'invert',
+            'filterBlur': 'blur',
+            'filterOpacity': 'opacity'
+        };
+
+        for (const [elementId, filterKey] of Object.entries(filterMapping)) {
+            const input = document.getElementById(elementId);
+            const valueSpan = document.getElementById(filterKey + 'Value');
+            if (input) {
+                const defaultValue = FilterManager.FILTERS[filterKey]?.default ?? 0;
+                input.value = filters[filterKey] ?? defaultValue;
+            }
+            if (valueSpan) {
+                const unit = FilterManager.FILTERS[filterKey]?.unit ?? '';
+                const defaultValue = FilterManager.FILTERS[filterKey]?.default ?? 0;
+                valueSpan.textContent = (filters[filterKey] ?? defaultValue) + unit;
+            }
+        }
+    }
+
     clearPropertyPanel() {
         const opacitySlider = document.getElementById('elementOpacity');
         const opacityValue = document.getElementById('opacityValue');
@@ -1863,9 +1928,11 @@ class App {
 
         const textSettings = document.getElementById('textSettings');
         const shapeSettings = document.getElementById('shapeSettings');
+        const filterSettings = document.getElementById('filterSettings');
 
         if (textSettings) textSettings.style.display = 'none';
         if (shapeSettings) shapeSettings.style.display = 'none';
+        if (filterSettings) filterSettings.style.display = 'none';
     }
 
     async exportImage() {
