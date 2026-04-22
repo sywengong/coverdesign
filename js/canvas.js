@@ -542,8 +542,20 @@ class CanvasEditor {
     }
 
     async exportAsImage(filename = 'cover.png', format = 'image/png') {
+        // 保存当前辅助线状态
+        const guidesEnabled = this.guides.enabled;
+
+        // 禁用辅助线并重新渲染
+        this.guides.enabled = false;
+        this.render();
+
+        // 导出图像
         const blob = await this.toBlob(format);
         Utils.downloadBlob(blob, filename);
+
+        // 恢复辅助线状态
+        this.guides.enabled = guidesEnabled;
+        this.render();
     }
 
     exportProject() {
