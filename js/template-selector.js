@@ -180,12 +180,17 @@ class TemplateSelector {
                     fontFamily: elemData.fontFamily,
                     fontWeight: elemData.fontWeight,
                     color: elemData.color,
-                    textAlign: elemData.textAlign
+                    textAlign: elemData.textAlign,
+                    letterSpacing: elemData.letterSpacing || 0,
+                    textShadow: elemData.textShadow || ''
                 });
                 // 调整位置使其居中
                 if (elemData.textAlign === 'center') {
                     element.x = elemData.x - element.width / 2;
                     element.y = elemData.y - element.height / 2;
+                }
+                if (elemData.rotation) {
+                    element.rotation = elemData.rotation;
                 }
                 break;
 

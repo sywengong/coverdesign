@@ -139,6 +139,8 @@ class TextElement extends CanvasElement {
         this.color = options.color || '#000000';
         this.textAlign = options.textAlign || 'left';
         this.lineHeight = options.lineHeight || 1.5;
+        this.letterSpacing = options.letterSpacing || 0;
+        this.textShadow = options.textShadow || '';
         this.name = '文字';
         
         this.autoSize();
@@ -208,24 +210,38 @@ class TextElement extends CanvasElement {
             fontWeight: this.fontWeight,
             color: this.color,
             textAlign: this.textAlign,
-            lineHeight: this.lineHeight
+            lineHeight: this.lineHeight,
+            letterSpacing: this.letterSpacing,
+            textShadow: this.textShadow
         };
     }
 
     render(ctx) {
         if (!this.visible) return;
-        
+
         ctx.save();
         ctx.globalAlpha = this.opacity / 100;
         ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
         ctx.rotate(this.rotation * Math.PI / 180);
         ctx.translate(-this.width / 2, -this.height / 2);
-        
+
         ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFamily}`;
         ctx.fillStyle = this.color;
         ctx.textAlign = this.textAlign;
         ctx.textBaseline = 'top';
-        
+
+        // textShadow 支持 (Canvas 只支持单层阴影，多值取第一个)
+        if (this.textShadow) {
+            const first = this.textShadow.split(',')[0].trim();
+            const m = first.match(/^(-?[\d.]+)px\s+(-?[\d.]+)px\s+([\d.]+)px\s+(.+)$/);
+            if (m) {
+                ctx.shadowOffsetX = parseFloat(m[1]);
+                ctx.shadowOffsetY = parseFloat(m[2]);
+                ctx.shadowBlur = parseFloat(m[3]);
+                ctx.shadowColor = m[4].trim();
+            }
+        }
+
         const lines = this.text.split('\n');
         let drawX = 0;
         switch (this.textAlign) {
@@ -240,9 +256,28 @@ class TextElement extends CanvasElement {
         }
 
         lines.forEach((line, index) => {
-            ctx.fillText(line, drawX, index * this.fontSize * this.lineHeight);
+            const y = index * this.fontSize * this.lineHeight;
+            if (this.letterSpacing > 0) {
+                // 逐字绘制以支持 letterSpacing
+                let chars = [...line];
+                let totalWidth = 0;
+                chars.forEach(ch => {
+                    totalWidth += ctx.measureText(ch).width + this.letterSpacing;
+                });
+                totalWidth -= this.letterSpacing;
+                let startX = drawX;
+                if (this.textAlign === 'center') startX = (this.width - totalWidth) / 2;
+                else if (this.textAlign === 'right') startX = this.width - totalWidth;
+                let cx = startX;
+                chars.forEach(ch => {
+                    ctx.fillText(ch, cx, y);
+                    cx += ctx.measureText(ch).width + this.letterSpacing;
+                });
+            } else {
+                ctx.fillText(line, drawX, y);
+            }
         });
-        
+
         ctx.restore();
     }
 }
